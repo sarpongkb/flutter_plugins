@@ -335,7 +335,7 @@ class FirebaseAuth {
     return currentUser;
   }
 
-  Future<void> verifyPhoneNumber({
+  Future<String> verifyPhoneNumber({
     @required String phoneNumber,
     @required Duration timeout,
     int forceResendingToken,
@@ -360,7 +360,7 @@ class FirebaseAuth {
       'forceResendingToken': forceResendingToken,
     };
 
-    await channel.invokeMethod('verifyPhoneNumber', params);
+    return await channel.invokeMethod('verifyPhoneNumber', params);
   }
 
   Future<FirebaseUser> signInWithCustomToken({@required String token}) async {

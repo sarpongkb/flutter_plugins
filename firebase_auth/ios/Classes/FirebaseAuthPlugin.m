@@ -259,10 +259,12 @@ int nextHandle = 0;
                                       @"exception" : [self mapVerifyPhoneError:error],
                                       @"handle" : handle
                                     }];
+                     result(nil);
                  } else {
                    [self.channel
                        invokeMethod:@"phoneCodeSent"
                           arguments:@{@"verificationId" : verificationID, @"handle" : handle}];
+                     result(verificationID);
                  }
                }];
   } else if ([@"signInWithPhoneNumber" isEqualToString:call.method]) {
