@@ -157,7 +157,7 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
         .addOnCompleteListener(new SignInCompleteListener(result));
   }
 
-  private void handleVerifyPhoneNumber(MethodCall call, Result result) {
+  private void handleVerifyPhoneNumber(MethodCall call, final Result result) {
     @SuppressWarnings("unchecked")
     final int handle = call.argument("handle");
     String phoneNumber = call.argument("phoneNumber");
@@ -165,6 +165,8 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
 
     PhoneAuthProvider.OnVerificationStateChangedCallbacks verificationCallbacks =
         new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+          private boolean resultSent = false;
+
           @Override
           public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
             firebaseAuth
@@ -178,6 +180,11 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
                           arguments.put("handle", handle);
                           channel.invokeMethod("phoneVerificationCompleted", arguments);
                         }
+
+                        if (!resultSent) {
+                          resultSent = true;
+                          result.success(handle);
+                        }
                       }
                     });
           }
@@ -188,6 +195,10 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
             arguments.put("handle", handle);
             arguments.put("exception", getVerifyPhoneNumberExceptionMap(e));
             channel.invokeMethod("phoneVerificationFailed", arguments);
+            if (!resultSent) {
+              resultSent = true;
+              result.error("", "phoneVerificationFailed", handle);
+            }
           }
 
           @Override
@@ -198,6 +209,10 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
             arguments.put("verificationId", verificationId);
             arguments.put("forceResendingToken", forceResendingToken.hashCode());
             channel.invokeMethod("phoneCodeSent", arguments);
+            if (!resultSent) {
+              resultSent = true;
+              result.success(verificationId);
+            }
           }
 
           @Override
@@ -206,6 +221,10 @@ public class FirebaseAuthPlugin implements MethodCallHandler {
             arguments.put("handle", handle);
             arguments.put("verificationId", verificationId);
             channel.invokeMethod("phoneCodeAutoRetrievalTimeout", arguments);
+            if (!resultSent) {
+              resultSent = true;
+              result.success(verificationId);
+            }
           }
         };
 

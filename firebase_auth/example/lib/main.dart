@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _smsCodeController.text = testSmsCode;
     };
 
-    String verificationId = await _auth.verifyPhoneNumber(
+    await _auth.verifyPhoneNumber(
         phoneNumber: testPhoneNumber,
         timeout: const Duration(seconds: 5),
         verificationCompleted: verificationCompleted,
@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
         codeSent: codeSent,
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
 
-    print("verificationId: $verificationId");
+    print("verificationId finished");
   }
 
   Future<String> _testSignInWithPhoneNumber(String smsCode) async {

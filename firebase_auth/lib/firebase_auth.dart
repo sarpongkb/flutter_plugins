@@ -335,7 +335,7 @@ class FirebaseAuth {
     return currentUser;
   }
 
-  Future<String> verifyPhoneNumber({
+  Future<void> verifyPhoneNumber({
     @required String phoneNumber,
     @required Duration timeout,
     int forceResendingToken,
